@@ -1,4 +1,5 @@
 import re
+from rules.contrib.rest_framework import AutoPermissionViewSetMixin
 
 nullable = dict(blank=True, null=True)
 
@@ -22,5 +23,25 @@ def slugify(s):
     slug = re.sub(r'^-+|-+$', '', slug)
 
     return slug
+
+class DefaultViewSetMixin(AutoPermissionViewSetMixin):
+    """
+    django_rules's default permission map allows `list` action w/out any permissions.
+    However in most cases, this doesn't work for us:
+    we usually need some sort for restriction for `list` (at least to logged in users).
+    So we tie `list` action to `view` permission as a default.
+    """
+
+    permission_type_map = {
+        **AutoPermissionViewSetMixin.permission_type_map,
+        "list": "view",
+    }
+
+    def get_object(self):
+        if not hasattr(self, '_object'):
+            self._object = super().get_object()  # noqa
+        return self._object
+
+
 
 

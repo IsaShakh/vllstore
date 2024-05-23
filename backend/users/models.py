@@ -32,6 +32,7 @@ class CustomUserManager(BaseUserManager):
         return user
 
 class User(AbstractBaseUser, PermissionsMixin):
+    nickname = models.CharField(max_length=100, blank=True)
     first_name = models.CharField(max_length=100, blank=True)
     second_name = models.CharField(max_length=100, blank=True)
     birthday = models.DateTimeField(**nullable)

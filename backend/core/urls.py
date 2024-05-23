@@ -15,17 +15,20 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path,include
+from django.urls import path,include, re_path
+from users.api.views import UserViewSet
 
 
 app_name = 'vllstore'
 
 api = [
-    path('products/', include('products.urls'))
+    path('products/', include('products.urls')),
+    path('users/', include('users.urls')),
 ]
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/', include(api)),
+    re_path(r'^api/v1/users/(?P<id_or_me>\d+|me)/$', UserViewSet.as_view({'get': 'retrieve'}), name='user-detail'),
 ]
